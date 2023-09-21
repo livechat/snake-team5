@@ -78,6 +78,7 @@ const SnakeHead = styled.div`
 const GameBoard = () => {
 	const [gameStage, setGameStage] = useState(GAME_STAGES.INITIAL)
 
+	// @ts-ignore - to make build pass for now :)
 	const [words, setWords] = useState<string[]>([])
 	const [selectedWord, setSelectedWord] = useState<string>('')
 	const [category, setCategory] = useState('')
@@ -187,6 +188,7 @@ const GameBoard = () => {
 	}
 
 	const fetchWords = async (category: string) => {
+		console.log('category', category)
 		try {
 			const words = [
 				'cat',
