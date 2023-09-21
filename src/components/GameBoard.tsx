@@ -7,9 +7,29 @@ const INITIAL_SNAKE_POSITION = [
 	{ x: GRID_SIZE / 2 + 1, y: GRID_SIZE / 2 },
 ]
 
+const GAME_STAGES = {
+	INITIAL: 'initial',
+	PLAYING: 'playing',
+	OVER: 'over',
+}
+
 const Wrapper = styled.div`
 	width: 100%;
 	height: 100%;
+`
+
+const CenteredContainer = styled.div`
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	height: 100%;
+`
+
+const InputLabel = styled.label`
+	font-size: 1.2em;
+	margin-bottom: 10px;
+	color: rebeccapurple;
 `
 
 const StyledHeader = styled.header`
@@ -56,6 +76,11 @@ const SnakeHead = styled.div`
 `
 
 const GameBoard = () => {
+	const [gameStage, setGameStage] = useState(GAME_STAGES.INITIAL)
+
+	const [words, setWords] = useState<string[]>([])
+	const [selectedWord, setSelectedWord] = useState<string>('')
+	const [category, setCategory] = useState('')
 	const [snakePosition, setSnakePosition] = useState(INITIAL_SNAKE_POSITION)
 	const [foodPosition, setFoodPosition] = useState({ x: 5, y: 5 })
 	const [direction, setDirection] = useState('left')
@@ -96,6 +121,7 @@ const GameBoard = () => {
 
 	const gameOver = () => {
 		console.log('Game Over')
+		setGameStage(GAME_STAGES.OVER)
 	}
 
 	const updateGame = () => {
@@ -160,8 +186,33 @@ const GameBoard = () => {
 		setFoodPosition({ x, y })
 	}
 
+	const fetchWords = async (category: string) => {
+		try {
+			const words = [
+				'cat',
+				'lion',
+				'tiger',
+				'giraffe',
+				'elephant',
+				'kangaroo',
+				'chimpanzee',
+				'rhinoceros',
+				'hippopotamus',
+				'salamander',
+			]
+
+			setWords(words)
+			setSelectedWord(words[0])
+
+			setGameStage(GAME_STAGES.PLAYING)
+		} catch (error) {
+			console.error(error)
+		}
+	}
+
 	useEffect(() => {
 		const interval = setInterval(() => {
+			if (gameStage !== GAME_STAGES.PLAYING) return
 			updateGame()
 		}, 500)
 		return () => clearInterval(interval)
@@ -174,8 +225,28 @@ const GameBoard = () => {
 
 	return (
 		<Wrapper>
-			<StyledHeader />
-			<Board>{renderBoard()}</Board>
+			{gameStage === GAME_STAGES.INITIAL ? (
+				<CenteredContainer>
+					<InputLabel>Enter Category:</InputLabel>
+					<input
+						autoFocus
+						type="text"
+						value={category}
+						onChange={(e) => setCategory(e.target.value)}
+						onKeyDown={(e) => {
+							if (e.key === 'Enter') {
+								fetchWords(category)
+							}
+						}}
+					/>
+					<button onClick={() => fetchWords(category)}>Start!</button>
+				</CenteredContainer>
+			) : (
+				<>
+					<StyledHeader>{selectedWord}</StyledHeader>
+					<Board>{renderBoard()}</Board>
+				</>
+			)}
 		</Wrapper>
 	)
 }
