@@ -75,7 +75,7 @@ const BottomText = styled.p`
 	color: #fff;
 	margin-top: -7px;
 	margin-bottom: 0;
-	font-size: 5vw;
+	font-size: 85px;
 	transform: rotate(-10deg);
 	text-shadow: 1px 0 0 #a8d5ec, -1px 0 0 #a8d5ec, 0 1px 0 #a8d5ec, 0 -1px 0 #a8d5ec, 1px 1px 0 #a8d5ec,
 		-1px -1px 0 #a8d5ec, 1px -1px 0 #a8d5ec, -1px 1px 0 #a8d5ec;
