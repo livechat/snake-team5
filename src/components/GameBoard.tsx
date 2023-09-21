@@ -1,5 +1,6 @@
 import styled from '@emotion/styled'
 import { useState, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
 
 const GRID_SIZE = 20
 const INITIAL_SNAKE_POSITION = [
@@ -76,6 +77,8 @@ const SnakeHead = styled.div`
 `
 
 const GameBoard = () => {
+	const navigate = useNavigate()
+
 	const [gameStage, setGameStage] = useState(GAME_STAGES.INITIAL)
 
 	// @ts-ignore - to make build pass for now :)
@@ -85,6 +88,9 @@ const GameBoard = () => {
 	const [snakePosition, setSnakePosition] = useState(INITIAL_SNAKE_POSITION)
 	const [foodPosition, setFoodPosition] = useState({ x: 5, y: 5 })
 	const [direction, setDirection] = useState('left')
+	const [score, setScore] = useState(0)
+	const [playerName, setPlayerName] = useState('')
+	const [showNameInput, setShowNameInput] = useState(false)
 
 	const renderBoard = () => {
 		let cells = []
@@ -122,6 +128,7 @@ const GameBoard = () => {
 
 	const gameOver = () => {
 		console.log('Game Over')
+		setShowNameInput(true)
 		setGameStage(GAME_STAGES.OVER)
 	}
 
@@ -157,6 +164,7 @@ const GameBoard = () => {
 
 		if (isFoodEaten) {
 			foodRandomizer()
+			setScore((prevScore) => prevScore + 1)
 		} else {
 			newSnakePosition.pop()
 		}
@@ -243,9 +251,27 @@ const GameBoard = () => {
 					/>
 					<button onClick={() => fetchWords(category)}>Start!</button>
 				</CenteredContainer>
+			) : gameStage === GAME_STAGES.OVER && showNameInput ? (
+				<CenteredContainer>
+					<InputLabel>Enter Your Name:</InputLabel>
+					<input autoFocus type="text" value={playerName} onChange={(e) => setPlayerName(e.target.value)} />
+					<button
+						onClick={() => {
+							const pastScores = JSON.parse(localStorage.getItem('snakeGameScores') || '[]')
+							pastScores.push({ name: playerName, score })
+							localStorage.setItem('snakeGameScores', JSON.stringify(pastScores))
+
+							navigate('/highscore')
+						}}
+					>
+						Save
+					</button>
+				</CenteredContainer>
 			) : (
 				<>
-					<StyledHeader>{selectedWord}</StyledHeader>
+					<StyledHeader>
+						Word: {selectedWord}, score: {score}
+					</StyledHeader>
 					<Board>{renderBoard()}</Board>
 				</>
 			)}

@@ -2,6 +2,7 @@ import styled from '@emotion/styled'
 import { Route, Routes } from 'react-router-dom'
 import Menu from './Menu'
 import GameBoard from './GameBoard'
+import Highscore from './Highscore'
 
 const GameContainer = styled.div`
 	height: 700px;
@@ -24,7 +25,7 @@ const GameOuter = () => {
 				<Routes>
 					<Route path="/" element={<Menu />} />
 					<Route path="/textravaganza" element={<GameBoard />} />
-					<Route path="/highscore" element="" />
+					<Route path="/highscore" element={<Highscore />} />
 				</Routes>
 			</GameContainer>
 		</Wrapper>
