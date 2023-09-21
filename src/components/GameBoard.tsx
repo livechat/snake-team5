@@ -1,6 +1,7 @@
 import styled from '@emotion/styled'
 import { useState, useEffect } from 'react'
-import { useNavigate } from 'react-router-dom'
+import InitialStageInput from './InitialStageInput'
+import GameOverInput from './GameOverInput'
 
 const GRID_SIZE = 20
 const INITIAL_SNAKE_POSITION = [
@@ -17,20 +18,6 @@ const GAME_STAGES = {
 const Wrapper = styled.div`
 	width: 100%;
 	height: 100%;
-`
-
-const CenteredContainer = styled.div`
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	height: 100%;
-`
-
-const InputLabel = styled.label`
-	font-size: 1.2em;
-	margin-bottom: 10px;
-	color: rebeccapurple;
 `
 
 const StyledHeader = styled.header`
@@ -77,20 +64,15 @@ const SnakeHead = styled.div`
 `
 
 const GameBoard = () => {
-	const navigate = useNavigate()
-
 	const [gameStage, setGameStage] = useState(GAME_STAGES.INITIAL)
 
 	// @ts-ignore - to make build pass for now :)
 	const [words, setWords] = useState<string[]>([])
 	const [selectedWord, setSelectedWord] = useState<string>('')
-	const [category, setCategory] = useState('')
 	const [snakePosition, setSnakePosition] = useState(INITIAL_SNAKE_POSITION)
 	const [foodPosition, setFoodPosition] = useState({ x: 5, y: 5 })
 	const [direction, setDirection] = useState('left')
 	const [score, setScore] = useState(0)
-	const [playerName, setPlayerName] = useState('')
-	const [showNameInput, setShowNameInput] = useState(false)
 
 	const renderBoard = () => {
 		let cells = []
@@ -128,7 +110,6 @@ const GameBoard = () => {
 
 	const gameOver = () => {
 		console.log('Game Over')
-		setShowNameInput(true)
 		setGameStage(GAME_STAGES.OVER)
 	}
 
@@ -233,48 +214,28 @@ const GameBoard = () => {
 		return () => window.removeEventListener('keydown', updateDirection)
 	})
 
+	if (gameStage === GAME_STAGES.INITIAL) {
+		return (
+			<Wrapper>
+				<InitialStageInput onStart={fetchWords} />
+			</Wrapper>
+		)
+	}
+
+	if (gameStage === GAME_STAGES.OVER) {
+		return (
+			<Wrapper>
+				<GameOverInput score={score} />
+			</Wrapper>
+		)
+	}
+
 	return (
 		<Wrapper>
-			{gameStage === GAME_STAGES.INITIAL ? (
-				<CenteredContainer>
-					<InputLabel>Enter Category:</InputLabel>
-					<input
-						autoFocus
-						type="text"
-						value={category}
-						onChange={(e) => setCategory(e.target.value)}
-						onKeyDown={(e) => {
-							if (e.key === 'Enter') {
-								fetchWords(category)
-							}
-						}}
-					/>
-					<button onClick={() => fetchWords(category)}>Start!</button>
-				</CenteredContainer>
-			) : gameStage === GAME_STAGES.OVER && showNameInput ? (
-				<CenteredContainer>
-					<InputLabel>Enter Your Name:</InputLabel>
-					<input autoFocus type="text" value={playerName} onChange={(e) => setPlayerName(e.target.value)} />
-					<button
-						onClick={() => {
-							const pastScores = JSON.parse(localStorage.getItem('snakeGameScores') || '[]')
-							pastScores.push({ name: playerName, score })
-							localStorage.setItem('snakeGameScores', JSON.stringify(pastScores))
-
-							navigate('/highscore')
-						}}
-					>
-						Save
-					</button>
-				</CenteredContainer>
-			) : (
-				<>
-					<StyledHeader>
-						Word: {selectedWord}, score: {score}
-					</StyledHeader>
-					<Board>{renderBoard()}</Board>
-				</>
-			)}
+			<StyledHeader>
+				Word: {selectedWord}, score: {score}
+			</StyledHeader>
+			<Board>{renderBoard()}</Board>
 		</Wrapper>
 	)
 }
