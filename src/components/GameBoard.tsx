@@ -179,18 +179,22 @@ const GameBoard = () => {
 	const fetchWords = async (category: string) => {
 		console.log('category', category)
 		try {
-			const words = [
-				'cat',
-				'lion',
-				'tiger',
-				'giraffe',
-				'elephant',
-				'kangaroo',
-				'chimpanzee',
-				'rhinoceros',
-				'hippopotamus',
-				'salamander',
-			]
+			// const response = await fetch('https://word-generator-dbl6lzd3pa-vp.a.run.app/generate', {
+			// 	method: 'POST',
+			// 	headers: {
+			// 		'Content-Type': 'application/x-www-form-urlencoded',
+			// 		Authorization: `Basic ${import.meta.env.VITE_AUTH_TOKEN}`,
+			// 	},
+			// 	body: `category=${category}`,
+			// })
+
+			// if (!response.ok) {
+			// 	throw new Error(`HTTP error! Status: ${response.status}`)
+			// }
+
+			// const data = await response.json()
+
+			const words = ['hello', 'world']
 
 			setWords(words)
 			setSelectedWord(words[0])

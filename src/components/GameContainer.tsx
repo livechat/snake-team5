@@ -3,15 +3,10 @@ import { Route, Routes } from 'react-router-dom'
 import Menu from './Menu'
 import GameBoard from './GameBoard'
 import Highscore from './Highscore'
-
-const GameContainer = styled.div`
-	height: 700px;
-	width: 800px;
-	border: 1px solid red;
-`
+import Layout from './Layout'
 
 const Wrapper = styled.div`
-	height: 100%;
+	height: 100vh;
 	width: 100%;
 	display: flex;
 	justify-content: center;
@@ -21,13 +16,13 @@ const Wrapper = styled.div`
 const GameOuter = () => {
 	return (
 		<Wrapper>
-			<GameContainer>
+			<Layout>
 				<Routes>
 					<Route path="/" element={<Menu />} />
 					<Route path="/textravaganza" element={<GameBoard />} />
 					<Route path="/highscore" element={<Highscore />} />
 				</Routes>
-			</GameContainer>
+			</Layout>
 		</Wrapper>
 	)
 }
