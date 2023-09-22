@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import styled from '@emotion/styled'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import InitialStageInput from './InitialStageInput'
 import GameOverInput from './GameOverInput'
 import ScoreBoard from './ScoreBoard'
@@ -40,12 +40,22 @@ const ScoreBoardWrapper = styled.div`
 `
 
 const GameBoard = () => {
+	const iframeRef = useRef<HTMLIFrameElement>(null)
 	const [gameStage, setGameStage] = useState(GAME_STAGES.INITIAL)
 
 	// @ts-ignore - to make build pass for now :)
 	const [words, setWords] = useState<string[]>([])
 	const [direction, setDirection] = useState('left')
 	const [score] = useState(0)
+
+	useEffect(() => {
+		if (gameStage === GAME_STAGES.PLAYING) {
+			setTimeout(() => {
+				console.log('here')
+				iframeRef.current?.focus()
+			}, 1000)
+		}
+	}, [gameStage])
 
 	// const renderBoard = () => {
 	// 	let cells = []
@@ -210,7 +220,7 @@ const GameBoard = () => {
 	return (
 		<Wrapper>
 			<IframeGame>
-				<IFrame src="https://snake-vue.netlify.app/" />
+				<IFrame ref={iframeRef} src="https://snake-vue.netlify.app/" />
 			</IframeGame>
 
 			<ScoreBoardWrapper>
